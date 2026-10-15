@@ -2,7 +2,7 @@
 
 **Real-time Heston option pricer with a lock-free C++ order book, a CUDA Monte Carlo engine, and a neural Greeks surrogate with calibrated uncertainty (about 100,000x faster than Monte Carlo bumping, batched).**
 
-![C++17](https://img.shields.io/badge/C%2B%2B-17-blue) ![CUDA](https://img.shields.io/badge/CUDA-12.x-green) ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange) <!-- add the CI badge once pushed: ![CI](https://github.com/<you>/quantumflow/actions/workflows/ci.yml/badge.svg) -->
+![C++17](https://img.shields.io/badge/C%2B%2B-17-blue) ![CUDA](https://img.shields.io/badge/CUDA-12.x-green) ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange) [![CI](https://github.com/Ameerpeta-Srinidh/quantumflow/actions/workflows/ci.yml/badge.svg)](https://github.com/Ameerpeta-Srinidh/quantumflow/actions/workflows/ci.yml)
 
 | Operation | Measured | Method |
 |---|---|---|
