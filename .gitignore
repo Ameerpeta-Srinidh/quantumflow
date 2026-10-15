@@ -4,3 +4,5 @@ __pycache__/
 *.pyd
 .ipynb_checkpoints/
 data/*.parquet
+kaggle/*.parquet
+kaggle/*.zip
