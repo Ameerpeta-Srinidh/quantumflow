@@ -220,6 +220,15 @@ def html():
             ("p50 / p99 / p99.9 latency", f"{s.p50_ns:.0f} / {s.p99_ns:.0f} / {s.p999_ns:.0f} ns"),
             ("throughput (1 thread)", f"{s.throughput_msgs_per_sec / 1e6:.1f} M msg/s"),
             ("best bid/ask read", f"{s.bbo_query_ns:.1f} ns")])))
+    if (RESULTS_DIR / "cuda_precision.csv").exists():
+        pr = pd.read_csv(RESULTS_DIR / "cuda_precision.csv").set_index("precision")
+        rows = [(f"4M paths x 256 steps, {k}", f"{pr.kernel_ms[k]:.1f} ms ({pr.paths_per_sec[k] / 1e6:.0f} M paths/s), "
+                 f"price {pr.price[k]:.4f} ± {pr.std_error[k]:.4f}") for k in pr.index]
+        if (RESULTS_DIR / "cuda_layout.csv").exists():
+            lay = pd.read_csv(RESULTS_DIR / "cuda_layout.csv").set_index("layout")
+            rows += [(f"path storage {k}", f"{lay.kernel_ms[k]:.2f} ms" + (f", {lay.effective_GBps[k]:.0f} GB/s"
+                      if lay.effective_GBps[k] > 0 else "")) for k in lay.index]
+        sections.append(("CUDA Monte Carlo", table(rows)))
     if (RESULTS_DIR / "surrogate_metrics.json").exists():
         m = json.load(open(RESULTS_DIR / "surrogate_metrics.json"))
         rows = [(f"{GREEK_LABELS[j]} MAE", f"{m['per_greek'][g]['mae']:.4g}") for j, g in enumerate(GREEKS)]

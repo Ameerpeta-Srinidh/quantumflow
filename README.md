@@ -9,14 +9,15 @@
 | Order book update | **44 ns p50, 201 ns p99** | single writer, flat `alignas(64)` levels, AVX2 scan, pooled nodes |
 | Order book throughput | **39 M msgs/s** (1 thread) | 5M-message synthetic feed |
 | Best bid/ask read (other thread) | **2.4 ns** | seqlock, no locks |
-| 10,000 Heston paths x 256 steps | **24 ms on 4 CPU cores**; GPU: *run `cuda_bench`* | CPU OpenMP / CUDA kernel |
+| Heston Monte Carlo, 256 steps | **196 M paths/s on a Tesla T4** (4M paths in 21 ms), **374x** the 4-core CPU (0.52 M paths/s) | CUDA kernel, float paths, Philox RNG in registers |
+| GPU price check | **8.9320 ± 0.0031** vs exact 8.9294 (0.9 SE) | 4M paths, antithetic + control variate |
 | Greeks, surrogate | **6.1 µs per option** batched (504 µs single call) | PyTorch MLP, 4 CPU threads |
 | Greeks, MC bump | 611 ms | 9 runs x 65,536 paths x 128 steps, CPU |
 | Delta MAE | **0.0011** | 100K held-out options |
 | 95% interval coverage (delta) | **95.2%** | MC dropout, 50 passes, calibrated |
 | Analytic pricer vs QuantLib | **< 1e-6** | 5 cases, `AnalyticHestonEngine` |
 
-Every number above was produced by the code in `benchmarks/` and `python/` on a 4-core cloud VM (no GPU) and is regenerated into `results/dashboard.html`. The GPU rows are filled by running `notebooks/colab_cuda.ipynb` on a free T4.
+Every number above was produced by the code in `benchmarks/` and `python/` on a 4-core cloud VM, except the GPU rows, which come from `notebooks/colab_cuda.ipynb` on a free Google Colab Tesla T4. All of it is regenerated into `results/dashboard.html`.
 
 ## Architecture
 
@@ -71,9 +72,19 @@ python python/dashboard/make_plots.py            # -> results/dashboard.html
 
 **Out of distribution**: on options beyond the training ranges, delta error rises from 0.0015 to 0.0052 and the MC-dropout spread rises with it (0.008 to 0.013), which is the signal `pipeline_demo.py` uses to fall back to Monte Carlo.
 
-## GPU profile (Nsight)
+## GPU results (Tesla T4, Colab)
 
-The CUDA kernel compiles for sm_61 / sm_75 / sm_86 (ptxas: 64 registers per thread with float paths, 94 with double). It has not been profiled yet; see `profiles/README.md` for the exact `nsys` / `ncu` commands and the metrics to report (occupancy, memory and compute throughput, roofline, L2 hit rate, warp efficiency), plus the block-size, float-vs-double and SoA-vs-AoS experiments already built into `cuda_bench`.
+![block sweep](results/plots/cuda_block_sweep.png)
+
+| Experiment | Result |
+|---|---|
+| Block size 32 / 64 / 128 / 256 / 512 / 1024 | 25.0 / 22.3 / 21.7 / **21.4** / 21.4 / 21.6 ms (4M paths x 256 steps); 256 chosen |
+| float vs double paths | **21.3 ms vs 649 ms (30x)**, prices 8.9320 vs 8.9312, both within 1 SE of exact |
+| Path storage (262K paths x 256 steps) | registers only 0.66 ms, SoA 0.74 ms (181 GB/s coalesced writes), **AoS 33.5 ms (45x slower, 4 GB/s)** |
+| Variance reduction on GPU (equal paths) | antithetic + control variate: SE 0.0051 → 0.0031, **2.8x lower variance** (CPU: 2.7x) |
+| End-to-end in the pipeline | 65,536 paths x 128 steps: **0.38 ms** median, including allocation and copy-back |
+
+The kernel uses 64 registers per thread in float (94 in double, ptxas on sm_75). The Nsight Systems timeline is in `profiles/qf_timeline.nsys-rep` (open it in the free Nsight Systems GUI). Nsight Compute did not produce a report on Colab, which does not give users access to the GPU performance counters, so occupancy, roofline and L2 numbers still need a machine where `ncu` is allowed; `profiles/README.md` has the commands.
 
 ## Mathematical appendix
 

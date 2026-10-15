@@ -1,10 +1,14 @@
 # GPU profiles (Nsight)
 
-This folder is where the Nsight Systems / Nsight Compute output belongs. It is
-empty in the first version of the repo because the project was built on a
-machine with no NVIDIA GPU: the CUDA kernel was compiled for sm_61, sm_75 and
-sm_86 (ptxas reported 64 registers per thread in float, 94 in double), but it
-has not been run or profiled yet.
+`qf_timeline.nsys-rep` is the Nsight Systems timeline of `cuda_bench` on a
+Google Colab Tesla T4 (sm_75). Open it in the free Nsight Systems GUI on any
+laptop; no GPU is needed to view it.
+
+There is no Nsight Compute (`ncu`) report yet: Colab does not let users read
+the GPU performance counters, so `ncu` exits without writing a file there.
+Run the `ncu` command below on a machine where you have counter access (your
+own NVIDIA GPU, or a cloud VM with admin rights) to get occupancy, roofline
+and L2 numbers.
 
 ## How to fill it (free, on Google Colab)
 

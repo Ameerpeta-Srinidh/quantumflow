@@ -1,0 +1,3 @@
+precision,kernel_ms,paths_per_sec,price,std_error
+float,21.3492,1.96462e+08,8.93202,0.00305298
+double,648.747,6.46523e+06,8.93124,0.00305527
