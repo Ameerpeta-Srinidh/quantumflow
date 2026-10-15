@@ -1,0 +1,81 @@
+{
+  "n_train": 350000,
+  "n_val": 50000,
+  "n_test": 100000,
+  "n_params": 614789,
+  "train_seconds": 946.251250329,
+  "epochs": 60,
+  "per_greek": {
+    "delta": {
+      "mae": 0.0011126993922516704,
+      "p99_abs_err": 0.004768530372530222,
+      "r2": 0.9999659657478333,
+      "truth_std": 0.2618383467197418
+    },
+    "gamma": {
+      "mae": 6.197811308084056e-05,
+      "p99_abs_err": 0.00038264336762949824,
+      "r2": 0.9997538924217224,
+      "truth_std": 0.007857311517000198
+    },
+    "theta_greek": {
+      "mae": 0.02486286871135235,
+      "p99_abs_err": 0.12496627867221832,
+      "r2": 0.9998456835746765,
+      "truth_std": 2.9178707599639893
+    },
+    "vega": {
+      "mae": 0.0005466457223519683,
+      "p99_abs_err": 0.0025709602050483227,
+      "r2": 0.9998583793640137,
+      "truth_std": 0.06543897092342377
+    },
+    "rho_greek": {
+      "mae": 0.0018593698041513562,
+      "p99_abs_err": 0.00836725253611803,
+      "r2": 0.9999289512634277,
+      "truth_std": 0.3084563612937927
+    }
+  },
+  "uncertainty": {
+    "mc_passes": 50,
+    "n_test": 20000,
+    "coverage95_raw": {
+      "delta": 0.99985,
+      "gamma": 0.9999,
+      "theta_greek": 0.9998,
+      "vega": 0.9996,
+      "rho_greek": 0.9997
+    },
+    "calibration_scale": {
+      "delta": 0.28927016258239746,
+      "gamma": 0.33387672901153564,
+      "theta_greek": 0.36046135425567627,
+      "vega": 0.36892250180244446,
+      "rho_greek": 0.3403393626213074
+    },
+    "coverage95_calibrated": {
+      "delta": 0.9516,
+      "gamma": 0.95105,
+      "theta_greek": 0.9481,
+      "vega": 0.95095,
+      "rho_greek": 0.9534
+    }
+  },
+  "ood": {
+    "delta_mae_inside": 0.0015452384696825118,
+    "delta_mae_outside": 0.005176585145535409,
+    "delta_std_inside": 0.008052472956478596,
+    "delta_std_outside": 0.012644107453525066
+  },
+  "speed": {
+    "surrogate_single_call_us": 503.96200003888225,
+    "surrogate_batched_per_option_us": 6.112384200014276,
+    "surrogate_mc_dropout_single_us": 3104.3670001054124,
+    "mc_bump_greeks_ms": 610.834431,
+    "mc_bump_config": "9 runs x 65,536 paths x 128 steps, backend=cpu",
+    "speedup_single_call": 1212.064463100139,
+    "speedup_batched": 99933.90647770037,
+    "torch_threads": 4
+  }
+}
