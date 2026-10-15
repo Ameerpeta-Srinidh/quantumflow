@@ -1,0 +1,4 @@
+layout,kernel_ms,effective_GBps
+registers_only,0.656672,0
+SoA,0.740576,181.234
+AoS,33.5248,4.00354
