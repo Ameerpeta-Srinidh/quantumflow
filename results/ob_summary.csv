@@ -1,0 +1,11 @@
+metric,value
+p50_ns,44.2866
+p95_ns,75.3587
+p99_ns,200.718
+p999_ns,503.582
+add_p99_ns,224.29
+cancel_p99_ns,158.932
+execute_p99_ns,156.789
+throughput_msgs_per_sec,3.91432e+07
+bbo_query_ns,2.36591
+top_snapshot_ns,2.08167

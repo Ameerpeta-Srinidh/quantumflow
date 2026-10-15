@@ -1,0 +1,31 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  cpu-build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Python deps
+        run: pip install numpy pandas pyarrow pyyaml pybind11 pytest QuantLib
+      - name: Configure (CPU only on the hosted runner)
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DQF_ENABLE_CUDA=OFF -DPython_EXECUTABLE=$(which python)
+      - name: Build
+        run: cmake --build build -j
+      - name: C++ tests
+        run: ctest --test-dir build --output-on-failure
+      - name: Validation vs QuantLib
+        run: python -m pytest tests/test_validation.py -q
+  cuda-compile:
+    runs-on: ubuntu-latest
+    container: nvidia/cuda:12.4.1-devel-ubuntu22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: apt-get update && apt-get install -y cmake g++ python3-dev python3-pip && pip3 install pybind11
+      - name: Compile the CUDA engine (no GPU needed to compile)
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES="61;75;86"
+          cmake --build build -j --target qf_cuda cuda_bench

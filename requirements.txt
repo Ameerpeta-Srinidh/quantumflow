@@ -1,0 +1,10 @@
+# Python side of QuantumFlow (C++/CUDA toolchain is separate: see README)
+numpy>=1.26
+pandas>=2.0
+pyarrow>=14
+pyyaml>=6
+matplotlib>=3.8
+torch>=2.2
+pybind11>=2.12
+pytest>=8
+QuantLib>=1.33      # optional, used only by tests/test_validation.py

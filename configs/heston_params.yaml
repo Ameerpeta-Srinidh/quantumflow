@@ -1,0 +1,13 @@
+# Sampling ranges for the Greeks surrogate training set.
+# Every sample draws each parameter uniformly from its [low, high] range.
+# The surrogate is only trustworthy inside these ranges: outside them it is
+# extrapolating, and its MC-dropout uncertainty should rise.
+S0:        [80.0, 120.0]   # spot price
+log_moneyness: [-0.3, 0.3] # ln(K / S0); K is derived from this
+T:         [0.1, 2.0]      # years to expiry
+r:         [0.0, 0.06]     # risk-free rate
+v0:        [0.01, 0.16]    # initial variance (10% to 40% vol)
+kappa:     [0.5, 5.0]      # mean-reversion speed
+theta:     [0.01, 0.16]    # long-run variance
+xi:        [0.1, 0.9]      # vol of vol
+rho:       [-0.9, 0.0]     # spot/vol correlation (equities: negative)
